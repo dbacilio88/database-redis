@@ -55,6 +55,12 @@ $ get key
 $ set key value
 ```
 
+### GET
+- Get the value of key. If the key does not exist the special value nil is returned. An error is returned if the value stored at key is not a string, because GET only handles string values.
+  - Return Bulk string reply: the value of key, or nil when key does not exist.
+### SET
+- Set key to hold the string value. If key already holds a value, it is overwritten, regardless of its type. Any previous time to live associated with the key is discarded on successful SET operation.
+
 #### Example:
 ```bash
 # Set and Get Information
@@ -76,6 +82,9 @@ $ set dd1ceced-1754-486a-bf22-1161c6f92026 "Christian"
 $ exists dd1ceced-1754-486a-bf22-1161c6f92026
 # (integer) 1
 ```
+
+### EXPIRE
+- Set a timeout on key. After the timeout has expired, the key will automatically be deleted. A key with an associated timeout is often said to be volatile in Redis terminology.
 
 ```bash
 # How to define keys with expiration
@@ -100,15 +109,14 @@ $ ttl dd1ceced-1754-486a-bf22-1161c6f92026
 $ ttl dd1ceced-1754-486a-bf22-1161c6f92026
 # (integer) -2
 ```
+### PERSIST
+- Remove the existing timeout on key, turning the key from volatile (a key with an expire set) to persistent (a key that will never expire as no timeout is associated).
+  - Return Integer reply, specifically:
+    - 1 if the timeout was removed.
+    - 0 if key does not exist or does not have an associated timeout.
 
 ```bash
 # How to remove expiration from a key
-# PERSIST Syntax
-$ PERSIST key
-# Return
-# - 1 if the timeout was removed.
-# - 0 if key does not exist or does not have an associated timeout.
-
 $ set dd1ceced-1754-486a-bf22-1161c6f92026 "Christian" ex 120
 # OK
 $ ttl dd1ceced-1754-486a-bf22-1161c6f92026
@@ -118,6 +126,7 @@ $ persist dd1ceced-1754-486a-bf22-1161c6f92026
 $ ttl dd1ceced-1754-486a-bf22-1161c6f92026
 # (integer) -1
 ```
+
 ```bash
 # Key Spaces
 $ set dd1ceced-1754-486a-bf22-1161c6f92026 "Christian"
@@ -128,4 +137,11 @@ $ set dd1ceced-1754-486a-bf22-1161c6f92026 "David"
 # OK
 $ get dd1ceced-1754-486a-bf22-1161c6f92026
 # "David" 
+```
+
+### SELECT
+- Select the Redis logical database having the specified zero-based numeric index. New connections always use the database 0.
+```bash
+$ select 1
+# OK
 ```
